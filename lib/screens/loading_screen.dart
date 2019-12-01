@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import 'package:clima/screens/location_screen.dart';
 
 import '../services/location.dart';
+import '../services/networking.dart';
+
+
+const apiKey='60223a0a2655f6c1379ff1b548eefaa6';
 
 
 class LoadingScreen extends StatefulWidget {
@@ -14,30 +18,29 @@ class LoadingScreen extends StatefulWidget {
 
 class _LoadingScreenState extends State<LoadingScreen> {
 
+  double latitude,longitude;
   
   void getLocation()async{
     Location uLoc=Location();
     await uLoc.getLocation();
-    print(uLoc.longitude+uLoc.latitude);
-  }
+    latitude=uLoc.latitude;
+    longitude=uLoc.longitude;
 
+    String url='https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey';
 
-  void getData()async {
-    http.Response response=await http.get('https://samples.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=b6907d289e10d714a6e88b30761fae22');
-    print(response.body);
-    var data=response.body;
-
-    double temperature=jsonDecode(data)['main']['temp'];
-    print(temperature);
-
-    String cityName=jsonDecode(data)['name']; 
-    print(cityName);
-  
-    int id=jsonDecode(data)['weather'][0]['id'];
-    print(id);    
-
+    NetworkHelper nh1=NetworkHelper(url);
+    var weatherData=await nh1.getData();
     
+    Navigator.push(context,
+      MaterialPageRoute(
+        builder: (context)=>LocationScreen(weatherData),
+      ) 
+    );
+
   }
+
+
+  
   
 
   @override
@@ -48,7 +51,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
     super.initState();
 
     getLocation();
-    getData();
+  
     //gets location of user with out any user interactiom
   }
 
@@ -57,12 +60,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: RaisedButton(
-          onPressed: () {
-           
-          
-          },
-          child: Text('Get Location'),
+        child: SpinKitWave(
+          size: 100.0,
+          color: Colors.cyan,
         ),
       ),
     );
