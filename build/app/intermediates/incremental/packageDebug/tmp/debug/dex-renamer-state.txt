@@ -1,4 +1,4 @@
-#Sun Dec 01 12:58:53 IST 2019
+#Sun Dec 01 14:11:12 IST 2019
 base.0=D\:\\Android\\AS_Projects\\Clima-Flutter\\build\\app\\intermediates\\transforms\\dexMerger\\debug\\0
 path.0=classes.dex
 renamed.0=classes.dex

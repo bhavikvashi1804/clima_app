@@ -2,14 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-import 'package:clima/screens/location_screen.dart';
-
-import '../services/location.dart';
-import '../services/networking.dart';
-
-
-const apiKey='60223a0a2655f6c1379ff1b548eefaa6';
-
+import '../screens/location_screen.dart';
+import '../services/weather.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -18,16 +12,11 @@ class LoadingScreen extends StatefulWidget {
 
 class _LoadingScreenState extends State<LoadingScreen> {
 
-  double latitude,longitude;
+  
   
   void getLocation()async{
-    Location uLoc=Location();
-    await uLoc.getLocation();
-
-    String url='https://api.openweathermap.org/data/2.5/weather?lat=${uLoc.latitude}&lon=${uLoc.longitude}&appid=$apiKey&units=metric';
-
-    NetworkHelper nh1=NetworkHelper(url);
-    var weatherData=await nh1.getData();
+  
+    var weatherData=await WeatherModel().getLocationWeather();
     
     Navigator.push(context,
       MaterialPageRoute(
@@ -47,7 +36,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
     //user does not have to anything 
     //under the init method all code executes Automatically
     super.initState();
-
+  
     getLocation();
   
     //gets location of user with out any user interactiom

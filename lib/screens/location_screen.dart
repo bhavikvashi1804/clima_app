@@ -1,34 +1,43 @@
 import 'package:flutter/material.dart';
-import 'package:clima/utilities/constants.dart';
+
+import '../services/weather.dart';
+import '../utilities/constants.dart';
+import './city_screen.dart';
 
 class LocationScreen extends StatefulWidget {
-  
-  final weatherdata;
-  LocationScreen(this.weatherdata);
+  final weatherData;
+
+  LocationScreen(this.weatherData);
 
   @override
   _LocationScreenState createState() => _LocationScreenState();
 }
 
 class _LocationScreenState extends State<LocationScreen> {
-
-  String cityName;
-  int id,temperature;
+  WeatherModel weatherModel = WeatherModel();
+  String cityName, weatherIcon, desc;
+  int id, temperature;
 
   @override
   void initState() {
-    
-
-    updateUI(widget.weatherdata);
+    updateUI(widget.weatherData);
     super.initState();
   }
 
-
-  void updateUI(dynamic weatherData){
-    cityName=weatherData['name'];
-    id=weatherData['weather'][0]['id']; 
-    temperature=weatherData['main']['temp'].toInt();
-
+  void updateUI(dynamic weatherData) {
+    if (weatherData == null) {
+      cityName='Unable to get data';
+      temperature=0;
+      desc='Error';
+      weatherIcon='!';
+      
+    }else {
+      cityName = weatherData['name'];
+      id = weatherData['weather'][0]['id'];
+      temperature = weatherData['main']['temp'].toInt();
+      weatherIcon = weatherModel.getWeatherIcon(id);
+      desc = weatherModel.getMessage(id) + ' in $cityName';
+    }
   }
 
   @override
@@ -53,14 +62,26 @@ class _LocationScreenState extends State<LocationScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      var weatherData1 =
+                          await weatherModel.getLocationWeather();
+                      updateUI(weatherData1);
+                    },
                     child: Icon(
                       Icons.near_me,
                       size: 50.0,
                     ),
                   ),
                   FlatButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      //if user want own location
+                      Navigator.push(context,
+                        MaterialPageRoute(
+                          builder: (context)=>CityScreen(),
+                        ) 
+                      
+                      );
+                    },
                     child: Icon(
                       Icons.location_city,
                       size: 50.0,
@@ -77,7 +98,7 @@ class _LocationScreenState extends State<LocationScreen> {
                       style: kTempTextStyle,
                     ),
                     Text(
-                      '☀️',
+                      weatherIcon,
                       style: kConditionTextStyle,
                     ),
                   ],
@@ -86,7 +107,7 @@ class _LocationScreenState extends State<LocationScreen> {
               Padding(
                 padding: EdgeInsets.only(right: 15.0),
                 child: Text(
-                  "It's 🍦 time in $cityName !",
+                  desc,
                   textAlign: TextAlign.right,
                   style: kMessageTextStyle,
                 ),
@@ -98,5 +119,3 @@ class _LocationScreenState extends State<LocationScreen> {
     );
   }
 }
-
-
