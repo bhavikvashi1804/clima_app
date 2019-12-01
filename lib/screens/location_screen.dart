@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:clima/utilities/constants.dart';
 
 class LocationScreen extends StatefulWidget {
-  var weatherdata;
-
+  
+  final weatherdata;
   LocationScreen(this.weatherdata);
 
   @override
@@ -12,7 +12,24 @@ class LocationScreen extends StatefulWidget {
 
 class _LocationScreenState extends State<LocationScreen> {
 
-  //static double temperature=widget.weatherdata['main']['temp'];
+  String cityName;
+  int id,temperature;
+
+  @override
+  void initState() {
+    
+
+    updateUI(widget.weatherdata);
+    super.initState();
+  }
+
+
+  void updateUI(dynamic weatherData){
+    cityName=weatherData['name'];
+    id=weatherData['weather'][0]['id']; 
+    temperature=weatherData['main']['temp'].toInt();
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +73,7 @@ class _LocationScreenState extends State<LocationScreen> {
                 child: Row(
                   children: <Widget>[
                     Text(
-                      '32°',
+                      '$temperature°',
                       style: kTempTextStyle,
                     ),
                     Text(
@@ -69,7 +86,7 @@ class _LocationScreenState extends State<LocationScreen> {
               Padding(
                 padding: EdgeInsets.only(right: 15.0),
                 child: Text(
-                  "It's 🍦 time in San Francisco!",
+                  "It's 🍦 time in $cityName !",
                   textAlign: TextAlign.right,
                   style: kMessageTextStyle,
                 ),
@@ -83,14 +100,3 @@ class _LocationScreenState extends State<LocationScreen> {
 }
 
 
-/*
-  
-  print(temperature);
-
-  String cityName=jsonDecode(data)['name']; 
-  print(cityName);
-  
-  int id=jsonDecode(data)['weather'][0]['id'];
-  print(id); 
-
-*/

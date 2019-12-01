@@ -12,7 +12,6 @@ class NetworkHelper{
 
   Future getData()async {
     http.Response response=await http.get(url);
-    print(response.body);
     var data=response.body;
     return jsonDecode(data);   
   }
